@@ -7,6 +7,7 @@ import CustomFlatList from './components/CustomFlatList.jsx';
 import CustomButton from './components/CustomButton.jsx';
 import ToastManager from 'toastify-react-native';
 import { showToastsInputList, showToastsTaskDeleted, showToastsTaskModified, showToastsTaskOk } from './assets/js/alerts.js';
+import RenderList from './components/RenderList.jsx';
 
 export default function App() {
   const [textItem, setTextItem] = useState('');
@@ -51,11 +52,16 @@ export default function App() {
     showToastsTaskDeleted()
   }
 
-  const onEditItem = (id) => {
-
-  }
-
   const renderListItem = ({ item }) => (
+    <RenderList
+      item={item}
+      taskOk={taskOk}
+      onSelectItemComplete={onSelectItemComplete}
+      onSelectItemHandler={onSelectItemHandler}
+    />
+  )
+
+  /* const renderListItem = ({ item }) => (
     <View style={styles.listItem}>
       <Text style={styles.listItemText}>{item.value}</Text>
       <View style={styles.listItemButtons}>
@@ -74,10 +80,8 @@ export default function App() {
           param={item.id}
         />
       </View>
-
-      {/* {<Button title='x' onPress={() => onSelectItemHandler(item.id)} />} */}
     </View>
-  )
+  ) */
 
   return (
 

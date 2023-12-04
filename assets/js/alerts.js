@@ -12,7 +12,7 @@ const showToastsTaskModified = () => {
 }
 
 const showToastsTaskDeleted = () => {
-    Toast.info('Tarea modificada', 'center');
+    Toast.success('Tarea eliminada', 'center');
 }
 
 
