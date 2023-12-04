@@ -1,12 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useState } from 'react';
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 import CustomModal from './components/CustomModal.jsx';
 import CustomInput from './components/CustomInput.jsx';
 import CustomFlatList from './components/CustomFlatList.jsx';
 import CustomButton from './components/CustomButton.jsx';
-
+import ToastManager from 'toastify-react-native';
+import { showToastsInputList, showToastsTaskDeleted, showToastsTaskModified, showToastsTaskOk } from './assets/js/alerts.js';
 
 export default function App() {
   const [textItem, setTextItem] = useState('');
@@ -20,37 +20,59 @@ export default function App() {
   }
 
   const addToList = () => {
-    setItemList(prevState => [...prevState, { id: Math.random().toString(), value: textItem }]);
-    setTextItem("");
-  }
+    if (textItem.trim()) {
+      setItemList(prevState => [...prevState, { id: Math.random().toString(), value: textItem }]);
+      setTextItem("");
+    } else {
+      showToastsInputList();
+    }
+  };
 
   const onSelectItemHandler = (id) => {
     setModalVisible(!modalVisible)
     setItemSelectedToDelete(itemList.find(item => item.id === id))
   }
 
+  const onSelectItemComplete = (id) => {
+    setTaskOk((prevTaskOk) => {
+      const isTaskCompleted = prevTaskOk.find((task) => task.id === id);
+      const updatedTaskOk = isTaskCompleted
+        ? (showToastsTaskModified(), prevTaskOk.filter((task) => task.id !== id))
+        : (showToastsTaskOk(), [...prevTaskOk, itemList.find((item) => item.id === id)]);
+
+      return updatedTaskOk;
+    });
+  };
+
+
   const onDeleteItemHandler = () => {
     setItemList(prevItems => prevItems.filter(item => item.id !== itemSelectedToDelete.id));
-    setModalVisible(false); // Close the modal after deleting the item
+    setModalVisible(false);
+    showToastsTaskDeleted()
+  }
+
+  const onEditItem = (id) => {
+
   }
 
   const renderListItem = ({ item }) => (
     <View style={styles.listItem}>
-      <Text styles={styles.listItemText}>{item.value}</Text>
+      <Text style={styles.listItemText}>{item.value}</Text>
       <View style={styles.listItemButtons}>
         <CustomButton
-          title=""
-          color="#e11d48"
-          event={onSelectItemHandler}
+          title="check"
+          taskOk={taskOk}
+          icon={true}
+          event={onSelectItemComplete}
           param={item.id}
         />
         <CustomButton
-          title="-"
+          title="trash-o"
+          icon={true}
           color="#e11d48"
           event={onSelectItemHandler}
           param={item.id}
         />
-
       </View>
 
       {/* {<Button title='x' onPress={() => onSelectItemHandler(item.id)} />} */}
@@ -58,10 +80,13 @@ export default function App() {
   )
 
   return (
+
     <View style={styles.layout}>
+      <ToastManager />
       <View style={styles.inputContainer}>
         <Text style={styles.title}>To Do List</Text>
       </View>
+
       <CustomInput
         placeholderProp="Ingresa la tarea"
         textItemProp={textItem}
@@ -82,6 +107,8 @@ export default function App() {
         setModalVisibleEvent={setModalVisible}
       />
     </View>
+
+
   );
 }
 
@@ -117,7 +144,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   listItemText: {
-    color: 'red',
+    color: '#f8fafc',
+    fontSize: 18
   },
   listItemButtons: {
     flexDirection: 'row',

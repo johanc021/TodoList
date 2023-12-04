@@ -2,7 +2,39 @@ import { Button, StyleSheet, Pressable, Text } from "react-native";
 import React from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-const CustomButton = ({ title, color, event, param }) => {
+const CustomButton = ({ title, icon, color, event, param, taskOk = [] }) => {
+  const handlePress = () => {
+    if (param) {
+      event(param);
+    } else {
+      event();
+    }
+  };
+
+  const isCompleted = taskOk.find((task) => task.id === param);
+
+  return (
+    <Pressable
+      style={({ pressed }) => [
+        styles.inputButton,
+        {
+          backgroundColor: pressed
+            ? "#128c3c"
+            : isCompleted
+            ? "#128c3c"
+            : color,
+        },
+      ]}
+      onPress={handlePress}
+    >
+      <Text style={styles.buttonText}>
+        {icon ? <FontAwesome name={title} size={17} /> : title}
+      </Text>
+    </Pressable>
+  );
+};
+
+/* const CustomButton = ({ icon, title, color, event, param }) => {
   const handlePress = () => {
     if (param) {
       event(param);
@@ -20,13 +52,15 @@ const CustomButton = ({ title, color, event, param }) => {
       onPress={handlePress}
     >
       <Text style={styles.buttonText}>
-        {title}
-        <FontAwesome name="trash-o" />
-        <FontAwesomeIcon icon="fa-solid fa-bars" />
+        {icon ? (
+          <FontAwesome name={title} size={17} />
+        ) : (
+          title
+        )}
       </Text>
     </Pressable>
   );
-};
+}; */
 
 const styles = StyleSheet.create({
   button: {
