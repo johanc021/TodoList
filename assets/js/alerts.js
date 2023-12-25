@@ -15,6 +15,4 @@ const showToastsTaskDeleted = () => {
     Toast.success('Tarea eliminada', 'center');
 }
 
-
-
 export { showToastsInputList, showToastsTaskOk, showToastsTaskModified, showToastsTaskDeleted }
